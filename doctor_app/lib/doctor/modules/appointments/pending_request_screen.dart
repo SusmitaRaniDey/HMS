@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../../data/providers/appointment_provider.dart';
+import '../../routes/app_routes.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
+import '../../utils/helpers.dart';
+import '../../widgets/empty_state.dart';
+import '../../widgets/loading_widget.dart';
+
+class PendingRequestsScreen extends StatefulWidget {
+  const PendingRequestsScreen({super.key});
+
+  @override
+  State<PendingRequestsScreen> createState() => _PendingRequestsScreenState();
+}
+
+class _PendingRequestsScreenState extends State<PendingRequestsScreen> {
+  final AppointmentProvider _provider = AppointmentProvider();
+  bool isLoading = false;
+  List<dynamic> pendingAppointments = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadPending();
+  }
+
+  Future<void> loadPending() async {
+    setState(() => isLoading = true);
+    try {
+      final appointments = await _provider.getPendingAppointments();
+      setState(() => pendingAppointments = appointments);
+    } catch (e) {
+      Helpers.showErrorSnackbar('Error', e.toString());
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.scaffold,
+      appBar: AppBar(title: const Text('Pending Requests')),
+      body: isLoading
+          ? const LoadingWidget()
+          : pendingAppointments.isEmpty
+          ? const EmptyState(
+              icon: Icons.check_circle_outline,
+              title: 'All Caught Up!',
+              message: 'No pending appointment requests',
+            )
+          : RefreshIndicator(
+              onRefresh: loadPending,
+              child: ListView.builder(
+                padding: EdgeInsets.all(16.w),
+                itemCount: pendingAppointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = pendingAppointments[index];
+                  return GestureDetector(
+                    onTap: () => Get.toNamed(
+                      AppRoutes.APPOINTMENT_DETAIL,
+                      arguments: appointment,
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 16.h),
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: AppColors.borderLight),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.shadow,
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50.w,
+                            height: 50.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.warning.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Icon(
+                              Icons.pending_actions,
+                              size: 28.sp,
+                              color: AppColors.warning,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  appointment.patient?.name ?? 'Patient',
+                                  style: AppTextStyles.subtitle1.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  '${Helpers.formatDate(appointment.date)} • ${appointment.timeSlot ?? 'N/A'}',
+                                  style: AppTextStyles.body2,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16.sp,
+                            color: AppColors.textHint,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+    );
+  }
+}

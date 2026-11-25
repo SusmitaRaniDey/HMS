@@ -1,0 +1,42 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_sslcommerz (3.0.0):
+    - Flutter
+    - SSLCommerzSDK
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - printing (1.0.0):
+    - Flutter
+  - SSLCommerzSDK (2.1.6)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_sslcommerz (from `.symlinks/plugins/flutter_sslcommerz/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - printing (from `.symlinks/plugins/printing/ios`)
+
+SPEC REPOS:
+  trunk:
+    - SSLCommerzSDK
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_sslcommerz:
+    :path: ".symlinks/plugins/flutter_sslcommerz/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  printing:
+    :path: ".symlinks/plugins/printing/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_sslcommerz: 1e8d84b5ca527c42eb176420f9dbce7de9b6f3bc
+  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
+  printing: 233e1b73bd1f4a05615548e9b5a324c98588640b
+  SSLCommerzSDK: 19ed6ac3bef1164a03ed18e2ee584708ba776da4
+
+PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+
+COCOAPODS: 1.16.2
