@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Scopes cleartext (plain HTTP) traffic to only the development backend
+  addresses used by lib/config/environment.dart (LAN IP + Android emulator
+  loopback). All other destinations must use HTTPS.
+
+  Once a real HTTPS production/staging server is wired up via the
+  API_BASE_URL dart-define, this file (and the cleartext-permitting
+  domain-config below) is no longer needed for release builds and can be
+  removed together with android:usesCleartextTraffic in AndroidManifest.xml.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Android emulator's alias for the host machine's localhost -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <!-- Dev LAN IP used for physical-device testing, see Environment._realDeviceIp -->
+        <domain includeSubdomains="false">192.168.1.102</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+
+    <!-- Everything else (including any production HTTPS host) must use TLS. -->
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>
